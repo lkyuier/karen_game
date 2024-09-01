@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Pygame in Browser</title>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script type="application/python">
+        import game_new  # This should match your game's main script name
+    </script>
+    <script src="https://pyodide-cdn2.iodide.io/v0.21.3/full/pyodide.js"></script>
+    <script src="https://pygame-web.github.io/pygbag/pygbag.js"></script>
+    <script>
+        // Ensure the Pygame window uses the specified canvas
+        window.onload = () => {
+            const canvas = document.getElementById('canvas');
+            canvas.focus();  // Focus the canvas to ensure it receives inputs
+            window.pygame.display.set_mode([800, 600], { 'canvas': canvas });
+        };
+    </script>
+</body>
+</html>
