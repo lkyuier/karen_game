@@ -1,0 +1,4 @@
+[tool.pygbag]
+archive = false
+standalone = false
+project_name = "karen_game"

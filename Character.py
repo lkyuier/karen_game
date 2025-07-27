@@ -49,8 +49,8 @@ class Character:
         if self.is_jumping:
             self.y += self.jump_velocity
             self.jump_velocity += gravity
-            if self.y >= self.screen_height // 2 - self.image.get_height() // 2:
-                self.y = self.screen_height // 2 - self.image.get_height() // 2
+            if self.y >= self.screen_height - self.image.get_height():
+                self.y = self.screen_height - self.image.get_height()
                 self.is_jumping = False
 
         # Handle fast fall

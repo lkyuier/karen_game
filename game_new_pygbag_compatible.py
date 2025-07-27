@@ -73,33 +73,46 @@ def start_game():
     global DIALOGS_ALL_CONTENT, dialogue_finished, current_dialog_index, mirror_position, mirror_health, score
 
     initialize_pygame()
-    font = pygame.font.Font("C:/Windows/Fonts/simhei.ttf", 18)
+    font = pygame.font.Font("assets/simhei.ttf", 18)  # Use relative path
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
+
     background = create_checkerboard(pygame, SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE)
+
     shards, shard_image = generate_shards(pygame, num_shards, SCREEN_WIDTH, SCREEN_HEIGHT)
 
-    person_mushicheng = Character("mushicheng", 'assets/images/mushichen.png', SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 150, SCREEN_WIDTH, SCREEN_HEIGHT)
-    person_bailiu = Character("bailiu", 'assets/images/bailiu.png', SCREEN_WIDTH // 4 + 50, SCREEN_HEIGHT - 150, SCREEN_WIDTH, SCREEN_HEIGHT)
+    person_mushicheng = Character("mushicheng", 'assets/images/mushichen.png', SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 50,
+                                  SCREEN_WIDTH, SCREEN_HEIGHT)
+    person_bailiu = Character("bailiu", 'assets/images/bailiu.png', SCREEN_WIDTH // 4 + 50, SCREEN_HEIGHT // 2 + 10,
+                              SCREEN_WIDTH, SCREEN_HEIGHT)
+
     # 加载镜子的图片
     mirror_image = pygame.image.load('assets/images/mirror.png')  # 替换为你镜子图片的路径
     mirror_image = pygame.transform.scale(mirror_image, MIRROR_SIZE)  # 调整图片大小
+
     characters = [person_mushicheng, person_bailiu]
+
     # 初始化镜子位置和定时器
     mirror_position = generate_random_mirror_position(characters, MIRROR_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT)
     last_mirror_move_time = pygame.time.get_ticks()
+
     # 初始化镜子血量
     mirror_health = 15
+
     current_dialog_index = 0
     collected_shards = 0
     total_shards = len(shards)
+
     # 初始化计分板
     score = 0
+
     monsters, monster_image = generate_monster(pygame, NUM_MONSTERS, SCREEN_WIDTH, SCREEN_HEIGHT,
                                                shards, characters)
     dialogue_finished = False
+
     while True:
         current_time = pygame.time.get_ticks()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -108,20 +121,25 @@ def start_game():
 
         if current_dialog_index >= len(DIALOGS_ALL_CONTENT):
             dialogue_finished = True
+
         keys = pygame.key.get_pressed()
+
         person_mushicheng.control_movement(keys, person_speed, jump_speed, gravity)
         person_bailiu.control_movement(keys, person_speed, jump_speed, gravity)
+
         previous_collected_shards = collected_shards
         collected_shards = remove_shared(collected_shards, shards, shard_image, person_mushicheng, person_bailiu)
 
         # 如果碎镜片被收集，增加分数
         if collected_shards > previous_collected_shards:
             score += 1
+
         if collected_shards == total_shards:
             current_dialog_index = 0  # 重置对话索引
             collected_shards = 0
             DIALOGS_ALL_CONTENT = DIALOGS_AFTER_SHARDS  # 重新赋值为新对话
             dialogue_finished = False
+
         if check_collision_with_monsters(person_mushicheng.x, person_mushicheng.y, person_bailiu.x, person_bailiu.y,
                                          monsters):
             start_game()
@@ -137,40 +155,51 @@ def start_game():
                 # 更新镜子位置以防止连续碰撞
                 mirror_position = generate_random_mirror_position(characters, MIRROR_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT)
                 break
+
         # 检查镜子血量是否归零
         if mirror_health <= 0 and DIALOGS_ALL_CONTENT != DIALOGS_AFTER_MIRROR:
             DIALOGS_ALL_CONTENT = DIALOGS_AFTER_MIRROR  # 切换对话内容
             current_dialog_index = 0  # 重置对话索引
             dialogue_finished = False
+
         # 每3秒钟移动一次镜子
         if current_time - last_mirror_move_time > MIRROR_MOVE_INTERVAL:
             mirror_position = generate_random_mirror_position(characters, MIRROR_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT)
             last_mirror_move_time = current_time
+
         render_game(screen, background, person_mushicheng, person_bailiu, shards, shard_image, monsters, monster_image,
                     font, dialogue_finished, current_dialog_index, mirror_image, mirror_position, mirror_health, score)
+
         clock.tick(30)
+
 
 def render_game(screen, background, person_mushicheng, person_bailiu, shards, shard_image, monsters, monster_image,
                 font, dialogue_finished, current_dialog_index, mirror_image, mirror_position, mirror_health, score):
     screen.blit(background, (0, 0))
     screen.blit(person_mushicheng.image, (person_mushicheng.x, person_mushicheng.y))
     screen.blit(person_bailiu.image, (person_bailiu.x, person_bailiu.y))
+
     for shard in shards:
         screen.blit(shard_image, shard.topleft)
+
     for monster in monsters:
         screen.blit(monster_image, monster.topleft)
+
     if not dialogue_finished:
         # 去除对话中的角色名字
         dialogue_text = DIALOGS_ALL_CONTENT[current_dialog_index]
         dialogue_text = dialogue_text.split(":")[-1].strip()  # 去除冒号前的内容
-        draw_text(screen, dialogue_text, (50, 50), font, BLACK)
+        draw_text(screen, dialogue_text, (50, 50), font, BLACK)  # 黑色文本
     else:
         # 绘制镜子的图片
         screen.blit(mirror_image, mirror_position)  # 在新位置绘制镜子
+
     # 绘制镜子的血量
     draw_text(screen, f"Mirror Health: {mirror_health}", (10, 10), font, BLACK)
+
     # 绘制计分板
     draw_text(screen, f"Score: {score}", (SCREEN_WIDTH - 120, 10), font, BLACK)
+
     pygame.display.flip()
 
 

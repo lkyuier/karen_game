@@ -1,33 +1,29 @@
 import pygame
 import sys
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))
-    pygame.display.set_caption("My Pygame Game")
-    clock = pygame.time.Clock()
+# Initialize Pygamel
+pygame.init()
 
-    # Your game initialization code here
+# Set up the screen
+screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("My Pygbag Game")
 
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-            # Handle other events
+    # Fill the screen with white color
+    screen.fill((255, 255, 255))
 
-        # Game logic
+    # Draw a red rectangle
+    pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(30, 30, 60, 60))
 
-        # Rendering
-        screen.fill((255, 255, 255))  # Clear screen with white color
-        # Draw your game elements here
+    # Update the display
+    pygame.display.flip()
 
-        pygame.display.flip()
-        clock.tick(60)  # 60 FPS
-
-    pygame.quit()
-    sys.exit()
-
-if __name__ == "__main__":
-    main()
+# Quit Pygame
+pygame.quit()
+sys.exit()

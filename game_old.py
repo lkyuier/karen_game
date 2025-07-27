@@ -4,7 +4,8 @@ import sys
 
 from Character import Character
 from commons import generate_shards, create_checkerboard, update_text_surfaces, \
-    remove_shared, check_collision, generate_monster, draw_text, check_collision_with_monsters
+    remove_shared, check_collision, generate_monster, draw_text, check_collision_with_monsters, \
+    generate_random_mirror_position, handle_dialogue
 from movement import control_movement
 
 # 常量定义
@@ -14,7 +15,8 @@ jump_speed = -15
 gravity = 0.5
 num_shards = 30
 TILE_SIZE = 50
-NUM_MONSTERS = 1
+BLACK = (0, 0, 0)
+NUM_MONSTERS = 2
 
 WHITE = (255, 255, 255)
 MIRROR_SIZE = (200, 200)
@@ -111,14 +113,14 @@ def start_game():
     while True:
         current_time = pygame.time.get_ticks()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            current_dialog_index = handle_dialogue(event, current_dialog_index, DIALOGS_ALL_CONTENT)
-
-        if current_dialog_index >= len(DIALOGS_ALL_CONTENT):
-            dialogue_finished = True
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         pygame.quit()
+        #         sys.exit()
+        #     current_dialog_index = handle_dialogue(event, current_dialog_index, DIALOGS_ALL_CONTENT)
+        #
+        # if current_dialog_index >= len(DIALOGS_ALL_CONTENT):
+        #     dialogue_finished = True
 
         keys = pygame.key.get_pressed()
 
